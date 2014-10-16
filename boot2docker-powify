@@ -1,0 +1,66 @@
+#!/bin/bash
+
+set -u
+
+POW_HOST_ROOT=${POW_HOST_ROOT:-$HOME/Library/Application Support/Pow/Hosts}
+
+for_each() {
+    while read line; do
+        [[ -n "$line" ]] || continue
+        "$@" $line
+    done
+}
+
+make_proxy_conf() {
+    local port=$1
+    local hostname=$2
+    local conf="$POW_HOST_ROOT/$hostname"
+    echo $port > "$conf"
+    echo "Created $conf"
+}
+
+start_port_forwarding() {
+    local port=$1
+    local forwarder="boot2docker ssh -N -L $port:0.0.0.0:$port"
+    local forwarder_exists=
+    pgrep boot2docker | while read pid; do
+        if [[ $(ps -o command= $pid) = "$forwarder" ]]; then
+            echo "Port $port is already forwarded"
+            return 99
+        fi
+    done
+    [[ $? = 99 ]] && return
+    $forwarder &
+    echo "Started forwarding port $port"
+}
+
+setup_domain() {
+    local port=$1
+    local name=$2
+    local hostname=$(sed 's/_/-/g' <<< $name)
+    make_proxy_conf $port $hostname
+    start_port_forwarding $port
+    echo "======> http://$hostname.dev is live"
+}
+
+to_port_and_name_list() {
+    awk 'NR>1 { print $(NF-1) " " $NF }' | grep -e '->' | sed 's/^.*://; s/->.* / /'
+}
+
+filter_by_name() {
+    local target_names=$*
+    if [[ -z "$target_names" ]]; then
+        cat
+        return
+    fi
+    while read line; do
+        local name=$(cut -d' ' -f2 <<< $line)
+        if grep -q " $name " <<< " $target_names "; then
+            echo $line
+        fi
+    done
+}
+
+target_names=$*
+list=$(docker ps --no-trunc=true | to_port_and_name_list | filter_by_name "$target_names")
+for_each setup_domain <<< "$list"
