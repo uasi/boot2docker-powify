@@ -18,7 +18,7 @@ CONTAINER ID        IMAGE                     COMMAND               CREATED     
 e4e983e368f5        dockerfile/ghost:latest   "bash /ghost-start"   3 hours ago         Up 3 hours          0.0.0.0:2368->2368/tcp   loving_galileo
 
 $ boot2docker-powify
-reated /Users/uasi/Library/Application Support/Pow/Hosts/loving-galileo
+Created /Users/uasi/Library/Application Support/Pow/Hosts/loving-galileo
 Started forwarding port 2368
 ======> http://loving-galileo.dev is live
 
