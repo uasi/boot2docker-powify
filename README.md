@@ -49,6 +49,7 @@ $ docker-powify foo bar # powify only foo and bar
 ## Who
 
 [@uasi](https://twitter.com/uasi) (<uasi@uasi.jp>)
+[@vidkun](https://github.com/vidkun)
 
 [Docker]: https://www.docker.com
 [Boot2docker]: http://boot2docker.io
