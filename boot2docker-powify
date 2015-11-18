@@ -2,6 +2,12 @@
 
 set -u
 
+if hash docker-machine 2>/dev/null; then
+    DOCKER_COMMAND="docker-machine"
+else
+    DOCKER_COMMAND="boot2docker"
+fi
+
 POW_HOST_ROOT=${POW_HOST_ROOT:-$HOME/Library/Application Support/Pow/Hosts}
 
 for_each() {
