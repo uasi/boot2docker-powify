@@ -2,6 +2,12 @@
 
 set -u
 
+if hash docker-machine 2>/dev/null; then
+    DOCKER_COMMAND="docker-machine"
+else
+    DOCKER_COMMAND="boot2docker"
+fi
+
 POW_HOST_ROOT=${POW_HOST_ROOT:-$HOME/Library/Application Support/Pow/Hosts}
 
 for_each() {
@@ -21,9 +27,13 @@ make_proxy_conf() {
 
 start_port_forwarding() {
     local port=$1
-    local forwarder="boot2docker ssh -N -L $port:0.0.0.0:$port"
+    if [[ $DOCKER_COMMAND = "docker-machine" ]]; then
+        local forwarder="$DOCKER_COMMAND ssh $DOCKER_MACHINE_NAME -N -L $port:0.0.0.0:$port"
+    else
+        local forwarder="$DOCKER_COMMAND ssh -N -L $port:0.0.0.0:$port"
+    fi
     local forwarder_exists=
-    pgrep boot2docker | while read -r pid; do
+    pgrep $DOCKER_COMMAND | while read -r pid; do
         if [[ $(ps -o command= $pid) = "$forwarder" ]]; then
             echo "Port $port is already forwarded"
             return 99
