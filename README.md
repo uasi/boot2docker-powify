@@ -1,12 +1,12 @@
-# boot2docker-powify
+# docker-powify
 
-[Boot2docker] :heart: [Pow]
+[Docker] :heart: [Pow]
 
 ## What
 
-`boot2docker-powify` sets up domain `foo-bar.dev` for a [Docker] container named `foo_bar`.
+`docker-powify` sets up domain `foo-bar.dev` for a [Docker] container named `foo_bar`.
 
-And `boot2docker-depowify` does the opposite.
+And `docker-depowify` does the opposite.
 
 ## How
 
@@ -17,7 +17,7 @@ $ docker ps
 CONTAINER ID        IMAGE                     COMMAND               CREATED             STATUS              PORTS                    NAMES
 e4e983e368f5        dockerfile/ghost:latest   "bash /ghost-start"   3 hours ago         Up 3 hours          0.0.0.0:2368->2368/tcp   loving_galileo
 
-$ boot2docker-powify
+$ docker-powify
 Created /Users/uasi/Library/Application Support/Pow/Hosts/loving-galileo
 Started forwarding port 2368
 ======> http://loving-galileo.dev is live
@@ -29,7 +29,7 @@ $ curl -s http://loving-galileo.dev | grep "<title>"
 ### To tear down
 
 ```
-$ boot2docker-depowify
+$ docker-depowify
 Removed /Users/uasi/Library/Application Support/Pow/Hosts/loving-galileo
 Killed ssh with pid 16719
 Stopped forwarding port 2368
@@ -42,13 +42,14 @@ $ curl -s http://loving-galileo.dev | grep "<title>"
 ### To specify containers
 
 ```
-$ boot2docker-powify         # powify all containers
-$ boot2docker-powify foo bar # powify only foo and bar
+$ docker-powify         # powify all containers
+$ docker-powify foo bar # powify only foo and bar
 ```
 
 ## Who
 
 [@uasi](https://twitter.com/uasi) (<uasi@uasi.jp>)
+[@vidkun](https://github.com/vidkun)
 
 [Docker]: https://www.docker.com
 [Boot2docker]: http://boot2docker.io
