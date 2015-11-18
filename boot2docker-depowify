@@ -2,6 +2,12 @@
 
 set -u
 
+if hash docker-machine 2>/dev/null; then
+    DOCKER_COMMAND="docker-machine"
+else
+    DOCKER_COMMAND="boot2docker"
+fi
+
 POW_HOST_ROOT=${POW_HOST_ROOT:-$HOME/Library/Application Support/Pow/Hosts}
 
 for_each() {
@@ -23,8 +29,12 @@ rm_proxy_conf() {
 
 stop_port_forwarding() {
     local port=$1
-    pgrep boot2docker | while read -r pid; do
-        local forwarder="boot2docker ssh -N -L $port:0.0.0.0:$port"
+    pgrep $DOCKER_COMMAND | while read -r pid; do
+        if [[ $DOCKER_COMMAND = "docker-machine" ]]; then
+            local forwarder="$DOCKER_COMMAND ssh $DOCKER_MACHINE_NAME -N -L $port:0.0.0.0:$port"
+        else
+            local forwarder="$DOCKER_COMMAND ssh -N -L $port:0.0.0.0:$port"
+        fi
         if [[ $(ps -o command= $pid) = "$forwarder" ]]; then
             # Kill ssh spawned by boot2docker ssh.
             # Doing so will terminate boot2docker ssh itself.
