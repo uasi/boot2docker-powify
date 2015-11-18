@@ -10,6 +10,11 @@ And `docker-depowify` does the opposite.
 
 ## How
 
+### Prerequisites
+
+If you're using docker-machine instead of boot2docker, this requires version >=
+`0.5.0` in order for the SSH port forwarding commands to work properly.
+
 ### To set up
 
 ```
